@@ -12,6 +12,15 @@ import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { genresObj } from '@App/modules/movie/constants/movie.enum.constants';
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
+import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
+
+const sessionId = '8b4ebc30e303562c47a9e2a4d10c3976';
+const listId = 120174;
+const accountId = '22414830';
+const accessTokenV3 =
+  'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTA1ZDg3NTJlNTFkMDI0MGNhMzRjNTNiYzhlMjE5NCIsIm5iZiI6MTc2MTQ4Mzk4NC41NTQsInN1YiI6IjY4ZmUxY2QwZTk0ZDNjYTUwOWZiNmUyZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-fztVO1jeHAW2l3m1OsIwAnLtJHKKbABWEUfp5Ed7EQ';
+// const accessTokenV4 =
+//   'eyJhbGciOiJIUzI1NiIsInR5cCIdIkpXVCJ9.eyJuYmYiOjE0ODM1NzM4MzUsInZlcnNpb24iOjEsInN1YiI6IjRiYzg4OTJhMDE3YTNjMGY5MjAwMDAwMiIsImF1ZCI6IlNmODc4NTdiZTIwOWQzNTE5ODMzYjMwMGExM2QwZTEyIiwic2NvcGVzIjpbImFwaV9yZWFkIiwiYXBpX3dyaXRlIl0sImp0aSI6Ijg4In0.b76OiEs10gdp9oNOoGpBJ94nO9Zi17Y7SvAXJQW8nH2';
 
 @Injectable()
 export class MovieService {
@@ -29,9 +38,9 @@ export class MovieService {
 
   async findAll(query: FindAllMoviesDto): Promise<IFindAllMovies> {
     try {
-      let apiUrl = `${this.baseUrl}/discover/movie?api_key=${this.apiKey}`;
+      let apiUrl = `${this.baseUrl}/3/discover/movie?api_key=${this.apiKey}`;
       if (query?.search) {
-        apiUrl = `${this.baseUrl}/search/movie?api_key=${this.apiKey}&query=${query.search}`;
+        apiUrl = `${this.baseUrl}/3/search/movie?api_key=${this.apiKey}&query=${query.search}`;
       }
       if (query?.page) {
         apiUrl += `&page=${query.page}`;
@@ -86,17 +95,19 @@ export class MovieService {
   async create(dto: CreateMovieDto): Promise<IMovie> {
     try {
       const existing = await this.movieRepository.findOne({
-        where: { id: dto.id },
+        where: { id: dto.media_id },
       });
       if (existing) return existing;
 
       const response = await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/list/${dto.id}/add_item?api_key=${this.apiKey}&session_id=111`,
-          dto,
+          `${this.baseUrl}/3/list/${listId}/add_item?api_key=${this.apiKey}&session_id=${sessionId}`,
+          { media_id: dto.media_id },
           {
             headers: {
               accept: 'application/json',
+              'content-type': 'application/json',
+              Authorization: `Bearer ${accessTokenV3}`,
             },
           },
         ),
@@ -137,7 +148,7 @@ export class MovieService {
 
       const response = await firstValueFrom(
         this.httpService.get(
-          `${this.baseUrl}/movie/${id}?api_key=${this.apiKey}`,
+          `${this.baseUrl}/3/movie/${id}?api_key=${this.apiKey}`,
           {
             headers: {
               accept: 'application/json',
@@ -178,7 +189,7 @@ export class MovieService {
     try {
       const response = await firstValueFrom(
         this.httpService.get(
-          `${this.baseUrl}/genre/movie/list?language=en?api_key=${this.apiKey}`,
+          `${this.baseUrl}/3/genre/movie/list?language=en?api_key=${this.apiKey}`,
           {
             headers: {
               accept: 'application/json',
@@ -211,21 +222,57 @@ export class MovieService {
 
   async addToWatch(dto: AddToWatchMovieDto): Promise<void> {
     try {
-      const accountId = '22414830';
       await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/account/${accountId}/watchlist?api_key=${this.apiKey}`,
+          `${this.baseUrl}/3/account/${accountId}/watchlist?api_key=${this.apiKey}`,
           {
             media_type: 'movie',
-            media_id: dto.id,
+            media_id: dto.media_id,
             watchlist: true,
           },
           {
             headers: {
               accept: 'application/json',
               'content-type': 'application/json',
-              Authorization:
-                'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTA1ZDg3NTJlNTFkMDI0MGNhMzRjNTNiYzhlMjE5NCIsIm5iZiI6MTc2MTQ4Mzk4NC41NTQsInN1YiI6IjY4ZmUxY2QwZTk0ZDNjYTUwOWZiNmUyZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-fztVO1jeHAW2l3m1OsIwAnLtJHKKbABWEUfp5Ed7EQ',
+              Authorization: `Bearer ${accessTokenV3}`,
+            },
+          },
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status || 400;
+        const message =
+          error.response?.data?.status_message ||
+          error.message ||
+          'Failed to movie add to watch TMDB.';
+
+        throw new BadRequestException({
+          statusCode,
+          message,
+        });
+      }
+
+      throw new BadRequestException(
+        error?.message || 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  async makeRate(dto: RateMovieDto): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          `${this.baseUrl}/3/movie/${dto.movie_id}/rating?api_key=${this.apiKey}`,
+          {
+            value: dto.value,
+          },
+          {
+            headers: {
+              accept: 'application/json',
+              'content-type': 'application/json',
+              Authorization: `Bearer ${accessTokenV3}`,
             },
           },
         ),

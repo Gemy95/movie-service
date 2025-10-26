@@ -18,7 +18,7 @@ export class CreateMovieDto {
 
   @ApiProperty({ example: 755898 })
   @IsNumber()
-  id: number;
+  media_id: number;
 
   @ApiProperty({ example: 'en' })
   @IsString()

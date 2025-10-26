@@ -5,5 +5,5 @@ export class AddToWatchMovieDto {
   @ApiProperty({ type: Number, example: 100 })
   @IsNotEmpty()
   @IsNumber()
-  id: number;
+  media_id: number;
 }

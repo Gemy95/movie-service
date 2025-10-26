@@ -1,6 +1,7 @@
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
+import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
 import {
   ICreateMovieResponse,
   IFindAllMoviesResponse,
@@ -81,5 +82,20 @@ export class MovieController {
   @Post('addToWatch')
   async addToWatch(@Body() dto: AddToWatchMovieDto): Promise<void> {
     return this.movieService.addToWatch(dto);
+  }
+
+  @ApiOperation({ summary: 'Rate Movie' })
+  @ApiBody({
+    description: 'Movie rated',
+    type: RateMovieDto,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Movie rated successfully',
+  })
+  @Post('rate')
+  async makeRate(@Body() dto: RateMovieDto): Promise<void> {
+    return this.movieService.makeRate(dto);
   }
 }
