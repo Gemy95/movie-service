@@ -1,3 +1,4 @@
+import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import {
@@ -65,5 +66,20 @@ export class MovieController {
         count: movies.total_results || 0,
       },
     };
+  }
+
+  @ApiOperation({ summary: 'Add to watch' })
+  @ApiBody({
+    description: 'Movie added to watch',
+    type: AddToWatchMovieDto,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Movie Added to watch successfully',
+  })
+  @Post('addToWatch')
+  async addToWatch(@Body() dto: AddToWatchMovieDto): Promise<void> {
+    return this.movieService.addToWatch(dto);
   }
 }

@@ -11,6 +11,7 @@ import {
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { genresObj } from '@App/modules/movie/constants/movie.enum.constants';
+import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 
 @Injectable()
 export class MovieService {
@@ -195,6 +196,48 @@ export class MovieService {
           error.response?.data?.status_message ||
           error.message ||
           'Failed to fetch genre details from TMDB.';
+
+        throw new BadRequestException({
+          statusCode,
+          message,
+        });
+      }
+
+      throw new BadRequestException(
+        error?.message || 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  async addToWatch(dto: AddToWatchMovieDto): Promise<void> {
+    try {
+      const accountId = '22414830';
+      await firstValueFrom(
+        this.httpService.post(
+          `${this.baseUrl}/account/${accountId}/watchlist?api_key=${this.apiKey}`,
+          {
+            media_type: 'movie',
+            media_id: dto.id,
+            watchlist: true,
+          },
+          {
+            headers: {
+              accept: 'application/json',
+              'content-type': 'application/json',
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTA1ZDg3NTJlNTFkMDI0MGNhMzRjNTNiYzhlMjE5NCIsIm5iZiI6MTc2MTQ4Mzk4NC41NTQsInN1YiI6IjY4ZmUxY2QwZTk0ZDNjYTUwOWZiNmUyZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-fztVO1jeHAW2l3m1OsIwAnLtJHKKbABWEUfp5Ed7EQ',
+            },
+          },
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status || 400;
+        const message =
+          error.response?.data?.status_message ||
+          error.message ||
+          'Failed to movie add to watch TMDB.';
 
         throw new BadRequestException({
           statusCode,
