@@ -1,5 +1,5 @@
 import { AppModule } from '@App/app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -23,6 +23,11 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
+  app.setGlobalPrefix('/api');
 
   await app.listen(port, () => {
     Logger.log(`🚀 Server is running on http://localhost:${port}`);
