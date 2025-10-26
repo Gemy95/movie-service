@@ -27,11 +27,31 @@ class EnvironmentVariables {
 
   @IsNotEmpty()
   @IsString()
-  MOVIE_BASE_URL: string;
+  MONGO_HOST: string;
 
   @IsNotEmpty()
   @IsString()
-  MOVIE_API_KEY: string;
+  MONGO_PORT: string;
+
+  @IsOptional()
+  @IsString()
+  MONGO_USERNAME: string;
+
+  @IsOptional()
+  @IsString()
+  MONGO_PASSWORD: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MONGO_DATABASE: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MONGO_DATABASE_AUTH: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MONGO_DNS_SERVE: string;
 
   @IsNotEmpty()
   @IsString()
@@ -48,6 +68,14 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   REDIS_PASSWORD?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MOVIE_BASE_URL: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MOVIE_API_KEY: string;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createKeyv } from '@keyv/redis';
 import { Keyv } from 'keyv';
 import { CacheableMemory } from 'cacheable';
+import { MovieModule } from './modules/movie/movie.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -40,6 +42,31 @@ import { CacheableMemory } from 'cacheable';
         };
       },
     }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const host = configService.get<string>('MONGO_HOST');
+        const port = configService.get<string>('MONGO_PORT');
+        const username = configService.get<string>('MONGO_USERNAME');
+        const password = configService.get<string>('MONGO_PASSWORD');
+        const database = configService.get<string>('MONGO_DATABASE');
+        const authSource = configService.get<string>('MONGO_DATABASE_AUTH');
+        const dsn = configService.get<string>('MONGO_DNS_SERVE');
+
+        let credentials = '';
+        if (username && password) {
+          credentials = `${username}:${password}@`;
+        }
+
+        const uri = dsn.includes('mongodb+srv')
+          ? `${dsn}${credentials}${host}/${database}?authSource=${authSource}`
+          : `${dsn}${credentials}${host}:${port}/${database}?authSource=${authSource}`;
+
+        return { uri };
+      },
+      inject: [ConfigService],
+    }),
+    MovieModule,
   ],
   controllers: [AppController],
   providers: [AppService],
