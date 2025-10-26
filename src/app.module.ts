@@ -28,7 +28,7 @@ import { CacheableMemory } from 'cacheable';
 
         const redisUrl = `redis://${redisUsername}:${redisPassword}@${redisHost}:${redisPort}`;
         const safeRedisUrl = `redis://${redisUsername}:****@${redisHost}:${redisPort}`;
-        Logger.log(safeRedisUrl, '[CacheModule] Using Redis URL:');
+        Logger.log(`CacheModule Using Redis URL: ${safeRedisUrl}`);
 
         return {
           stores: [
