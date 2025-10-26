@@ -13,7 +13,6 @@ export class CatchEverythingFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
-
     const ctx = host.switchToHttp();
 
     const httpStatus =
@@ -21,8 +20,19 @@ export class CatchEverythingFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    const message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : 'Internal server error';
+
+    const normalizedMessage =
+      typeof message === 'object' && message !== null
+        ? (message as any).message || JSON.stringify(message)
+        : message;
+
     const responseBody = {
       statusCode: httpStatus,
+      message: normalizedMessage,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
