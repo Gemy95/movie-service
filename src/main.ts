@@ -1,9 +1,11 @@
 import { AppModule } from '@App/app.module';
+import { Environment } from '@App/config/env.validation';
 import { CatchEverythingFilter } from '@App/shared/filters/all-exception.filter';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
 
 async function bootstrap() {
@@ -33,8 +35,21 @@ async function bootstrap() {
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new CatchEverythingFilter(httpAdapterHost));
 
+  if (configService.get('app.env') !== Environment.PRODUCTION) {
+    const config = new DocumentBuilder()
+      .setTitle('Movie Apis')
+      .setVersion('1.0')
+      .addServer(`http://localhost:${port}`)
+      .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, documentFactory);
+  }
+
   await app.listen(port, () => {
     Logger.log(`🚀 Server is running on http://localhost:${port}`);
+    if (configService.get('app.env') !== Environment.PRODUCTION) {
+      Logger.log(`📖 Swagger docs available at http://localhost:${port}/docs`);
+    }
   });
 }
 bootstrap();
