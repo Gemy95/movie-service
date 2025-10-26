@@ -94,7 +94,7 @@ export class MovieController {
     status: 200,
     description: 'Movie rated successfully',
   })
-  @Post('rate')
+  @Post('makeRate')
   async makeRate(@Body() dto: RateMovieDto): Promise<void> {
     return this.movieService.makeRate(dto);
   }
