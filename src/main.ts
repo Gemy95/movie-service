@@ -1,7 +1,8 @@
 import { AppModule } from '@App/app.module';
+import { CatchEverythingFilter } from '@App/shared/filters/all-exception.filter';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { json, urlencoded } from 'express';
 
@@ -28,6 +29,9 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.setGlobalPrefix('/api');
+
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new CatchEverythingFilter(httpAdapterHost));
 
   await app.listen(port, () => {
     Logger.log(`🚀 Server is running on http://localhost:${port}`);
