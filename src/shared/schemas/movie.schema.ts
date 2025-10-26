@@ -1,22 +1,53 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 
 export type MovieDocument = HydratedDocument<Movie>;
 
 @Schema({
-  _id: false,
   timestamps: true,
   versionKey: false,
   collection: 'movies',
   strict: false, // allowing any future data
 })
 export class Movie {
-  @Prop({ type: String, default: uuidv4 })
-  id: string;
+  @Prop({ required: true, unique: true })
+  id: number;
 
-  @Prop({ type: Date, default: null, name: 'deleted_at' })
-  deletedAt?: Date;
+  @Prop({ required: true })
+  backdrop_path: string;
+
+  @Prop({ type: [Number], required: true })
+  genre_ids: number[];
+
+  @Prop({ required: true })
+  original_language: string;
+
+  @Prop({ required: true })
+  original_title: string;
+
+  @Prop({ required: true })
+  overview: string;
+
+  @Prop({ required: true })
+  popularity: number;
+
+  @Prop({ required: true })
+  poster_path: string;
+
+  @Prop({ required: true })
+  release_date: string;
+
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  video: boolean;
+
+  @Prop({ required: true })
+  vote_average: number;
+
+  @Prop({ required: true })
+  vote_count: number;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
