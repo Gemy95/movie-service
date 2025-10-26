@@ -3,6 +3,7 @@ const DEFAULT_SERVER_PORT = 5000;
 export interface Configuration {
   app: AppSetting;
   services: Services;
+  redis: Redis;
 }
 
 export interface AppSetting {
@@ -18,6 +19,13 @@ export interface Services {
   movie: Movie;
 }
 
+export interface Redis {
+  host: string;
+  port: number;
+  username?: string;
+  password?: string;
+}
+
 export const configuration = (): Configuration => {
   const defaultConfiguration: Configuration = {
     app: {
@@ -29,6 +37,12 @@ export const configuration = (): Configuration => {
         url: process.env.MOVIE_BASE_URL,
         apiKey: process.env.MOVIE_API_KEY,
       },
+    },
+    redis: {
+      host: process.env.REDIS_HOST,
+      port: +process.env.REDIS_PORT,
+      username: process.env.REDIS_USERNAME,
+      password: process.env.REDIS_PASSWORD,
     },
   };
   return defaultConfiguration;
