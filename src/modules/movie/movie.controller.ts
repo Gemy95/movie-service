@@ -9,8 +9,15 @@ import {
 } from '@App/modules/movie/interfaces/movie.interface';
 import { MovieService } from '@App/modules/movie/movie.service';
 import { swaggerTags } from '@App/shared/constants/swagger.tags.constant';
-import { Body, Controller, Post, Query, Get } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Query, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import {
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags(swaggerTags.Movie)
 @Controller({ path: '/movie', version: ['1'] })
@@ -23,7 +30,14 @@ export class MovieController {
     type: CreateMovieDto,
     required: true,
   })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
   @ApiResponse({ status: 200, description: 'Movie created successfully' })
+  @UseGuards(AuthGuard('api-key'))
   @Post('')
   async create(@Body() dto: CreateMovieDto): Promise<ICreateMovieResponse> {
     const createdMovie = await this.movieService.create(dto);
@@ -35,7 +49,14 @@ export class MovieController {
   }
 
   @ApiOperation({ summary: 'Fetch One Movie' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
   @ApiResponse({ status: 200, description: 'Movie fetched successfully' })
+  @UseGuards(AuthGuard('api-key'))
   @Get(':id')
   async findOne(@Query('id') id: string): Promise<ICreateMovieResponse> {
     const movie = await this.movieService.findOne(id);
@@ -47,7 +68,14 @@ export class MovieController {
   }
 
   @ApiOperation({ summary: 'Fetch All Movies' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
   @ApiResponse({ status: 200, description: 'Movies fetched successfully' })
+  @UseGuards(AuthGuard('api-key'))
   @Get('')
   async findAll(
     @Query() query: FindAllMoviesDto,
@@ -70,6 +98,12 @@ export class MovieController {
   }
 
   @ApiOperation({ summary: 'Add to watch' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
   @ApiBody({
     description: 'Movie added to watch',
     type: AddToWatchMovieDto,
@@ -79,6 +113,7 @@ export class MovieController {
     status: 200,
     description: 'Movie Added to watch successfully',
   })
+  @UseGuards(AuthGuard('api-key'))
   @Post('addToWatch')
   async addToWatch(@Body() dto: AddToWatchMovieDto): Promise<void> {
     return this.movieService.addToWatch(dto);
@@ -90,10 +125,17 @@ export class MovieController {
     type: RateMovieDto,
     required: true,
   })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
   @ApiResponse({
     status: 200,
     description: 'Movie rated successfully',
   })
+  @UseGuards(AuthGuard('api-key'))
   @Post('makeRate')
   async makeRate(@Body() dto: RateMovieDto): Promise<void> {
     return this.movieService.makeRate(dto);

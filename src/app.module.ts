@@ -10,6 +10,7 @@ import { Keyv } from 'keyv';
 import { CacheableMemory } from 'cacheable';
 import { MovieModule } from './modules/movie/movie.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from '@App/modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
       inject: [ConfigService],
     }),
+    AuthModule,
     MovieModule,
   ],
   controllers: [AppController],
