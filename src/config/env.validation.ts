@@ -76,6 +76,14 @@ class EnvironmentVariables {
   @IsNotEmpty()
   @IsString()
   MOVIE_API_KEY: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MOVIE_ACCESS_TOKEN_V3: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MOVIE_SESSION_ID: string;
 }
 
 export function validate(config: Record<string, unknown>) {

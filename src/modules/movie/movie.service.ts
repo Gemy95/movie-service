@@ -17,11 +17,8 @@ import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-mo
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 
-const sessionId = '8b4ebc30e303562c47a9e2a4d10c3976';
 const listId = 120174;
 const accountId = '22414830';
-const accessTokenV3 =
-  'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTA1ZDg3NTJlNTFkMDI0MGNhMzRjNTNiYzhlMjE5NCIsIm5iZiI6MTc2MTQ4Mzk4NC41NTQsInN1YiI6IjY4ZmUxY2QwZTk0ZDNjYTUwOWZiNmUyZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-fztVO1jeHAW2l3m1OsIwAnLtJHKKbABWEUfp5Ed7EQ';
 // const accessTokenV4 =
 //   'eyJhbGciOiJIUzI1NiIsInR5cCIdIkpXVCJ9.eyJuYmYiOjE0ODM1NzM4MzUsInZlcnNpb24iOjEsInN1YiI6IjRiYzg4OTJhMDE3YTNjMGY5MjAwMDAwMiIsImF1ZCI6IlNmODc4NTdiZTIwOWQzNTE5ODMzYjMwMGExM2QwZTEyIiwic2NvcGVzIjpbImFwaV9yZWFkIiwiYXBpX3dyaXRlIl0sImp0aSI6Ijg4In0.b76OiEs10gdp9oNOoGpBJ94nO9Zi17Y7SvAXJQW8nH2';
 
@@ -29,6 +26,8 @@ const accessTokenV3 =
 export class MovieService {
   private readonly baseUrl;
   private readonly apiKey;
+  private readonly accessTokenV3;
+  private readonly sessionId;
 
   constructor(
     private readonly movieRepository: MovieRepository,
@@ -38,6 +37,9 @@ export class MovieService {
   ) {
     this.baseUrl = this.configService.get<string>('services.movie.url');
     this.apiKey = this.configService.get<string>('services.movie.apiKey');
+        this.accessTokenV3 = this.configService.get<string>('services.movie.accessTokenV3');
+    this.sessionId = this.configService.get<string>('services.movie.sessionId');
+
   }
 
   async findAll(query: FindAllMoviesDto): Promise<IFindAllMovies> {
@@ -114,13 +116,13 @@ export class MovieService {
 
       const response = await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/3/list/${listId}/add_item?api_key=${this.apiKey}&session_id=${sessionId}`,
+          `${this.baseUrl}/3/list/${listId}/add_item?api_key=${this.apiKey}&session_id=${this.sessionId}`,
           { media_id: dto.media_id },
           {
             headers: {
               accept: 'application/json',
               'content-type': 'application/json',
-              Authorization: `Bearer ${accessTokenV3}`,
+              Authorization: `Bearer ${this.accessTokenV3}`,
             },
           },
         ),
@@ -212,7 +214,7 @@ export class MovieService {
             headers: {
               accept: 'application/json',
               'content-type': 'application/json',
-              Authorization: `Bearer ${accessTokenV3}`,
+              Authorization: `Bearer ${this.accessTokenV3}`,
             },
           },
         ),
@@ -251,7 +253,7 @@ export class MovieService {
             headers: {
               accept: 'application/json',
               'content-type': 'application/json',
-              Authorization: `Bearer ${accessTokenV3}`,
+              Authorization: `Bearer ${this.accessTokenV3}`,
             },
           },
         ),
@@ -288,7 +290,7 @@ export class MovieService {
             headers: {
               accept: 'application/json',
               'content-type': 'application/json',
-              Authorization: `Bearer ${accessTokenV3}`,
+              Authorization: `Bearer ${this.accessTokenV3}`,
             },
           },
         ),

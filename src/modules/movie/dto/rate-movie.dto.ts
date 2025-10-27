@@ -7,7 +7,7 @@ export class RateMovieDto {
   @IsNumber()
   movie_id: number;
 
-  @ApiProperty({ type: Number, example: 100 })
+  @ApiProperty({ type: Number, example: 5 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0.5)
