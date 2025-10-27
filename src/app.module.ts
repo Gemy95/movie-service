@@ -8,9 +8,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createKeyv } from '@keyv/redis';
 import { Keyv } from 'keyv';
 import { CacheableMemory } from 'cacheable';
-import { MovieModule } from './modules/movie/movie.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '@App/modules/auth/auth.module';
+import { MovieModule } from '@App/modules/movie/movie.module';
 
 @Module({
   imports: [
