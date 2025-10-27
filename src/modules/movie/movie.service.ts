@@ -13,6 +13,7 @@ import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { genresObj } from '@App/modules/movie/constants/movie.enum.constants';
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
+import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 
 const sessionId = '8b4ebc30e303562c47a9e2a4d10c3976';
 const listId = 120174;
@@ -247,6 +248,46 @@ export class MovieService {
           error.response?.data?.status_message ||
           error.message ||
           'Failed to movie add to watch TMDB.';
+
+        throw new BadRequestException({
+          statusCode,
+          message,
+        });
+      }
+
+      throw new BadRequestException(
+        error?.message || 'An unexpected error occurred.',
+      );
+    }
+  }
+
+  async addToFavorite(dto: AddToFavoriteMovieDto): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          `${this.baseUrl}/3/account/${accountId}/favorite?api_key=${this.apiKey}`,
+          {
+            media_type: 'movie',
+            media_id: dto.media_id,
+            favorite: true,
+          },
+          {
+            headers: {
+              accept: 'application/json',
+              'content-type': 'application/json',
+              Authorization: `Bearer ${accessTokenV3}`,
+            },
+          },
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status || 400;
+        const message =
+          error.response?.data?.status_message ||
+          error.message ||
+          'Failed to movie add to favorite TMDB.';
 
         throw new BadRequestException({
           statusCode,

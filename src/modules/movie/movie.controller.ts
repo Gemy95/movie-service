@@ -1,3 +1,4 @@
+import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
@@ -117,6 +118,28 @@ export class MovieController {
   @Post('addToWatch')
   async addToWatch(@Body() dto: AddToWatchMovieDto): Promise<void> {
     return this.movieService.addToWatch(dto);
+  }
+
+  @ApiOperation({ summary: 'Add to Favorite' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
+  @ApiBody({
+    description: 'Movie added to favorite',
+    type: AddToWatchMovieDto,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Movie Added to favorite successfully',
+  })
+  @UseGuards(AuthGuard('api-key'))
+  @Post('addToFavorite')
+  async addToFavorite(@Body() dto: AddToFavoriteMovieDto): Promise<void> {
+    return this.movieService.addToFavorite(dto);
   }
 
   @ApiOperation({ summary: 'Rate Movie' })
