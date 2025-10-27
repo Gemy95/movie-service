@@ -3,22 +3,12 @@ import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dt
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
-import {
-  ICreateMovieResponse,
-  IFindAllMoviesResponse,
-  IMovie,
-} from '@App/modules/movie/interfaces/movie.interface';
+import { ICreateMovieResponse, IFindAllMoviesResponse, IMovie } from '@App/modules/movie/interfaces/movie.interface';
 import { MovieService } from '@App/modules/movie/movie.service';
 import { swaggerTags } from '@App/shared/constants/swagger.tags.constant';
 import { Body, Controller, Post, Query, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBody,
-  ApiHeader,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags(swaggerTags.Movie)
 @Controller({ path: '/movie', version: ['1'] })
@@ -78,9 +68,7 @@ export class MovieController {
   @ApiResponse({ status: 200, description: 'Movies fetched successfully' })
   @UseGuards(AuthGuard('api-key'))
   @Get('')
-  async findAll(
-    @Query() query: FindAllMoviesDto,
-  ): Promise<IFindAllMoviesResponse> {
+  async findAll(@Query() query: FindAllMoviesDto): Promise<IFindAllMoviesResponse> {
     const movies = await this.movieService.findAll(query);
     const data = (movies?.results || [])?.map((movie: IMovie) => {
       return {

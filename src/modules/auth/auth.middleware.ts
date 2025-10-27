@@ -1,9 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import {
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { NextFunction } from 'express';
@@ -16,12 +12,10 @@ export class AuthMiddleware implements NestMiddleware {
 
   constructor(
     private readonly httpService: HttpService,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {
     this.baseUrl = this.configService.get<string>('services.movie.url');
-    this.accessTokenV3 = this.configService.get<string>(
-      'services.movie.accessTokenV3',
-    );
+    this.accessTokenV3 = this.configService.get<string>('services.movie.accessTokenV3');
   }
   async use(_req: Request, _res: Response, next: NextFunction) {
     try {
@@ -31,7 +25,7 @@ export class AuthMiddleware implements NestMiddleware {
             accept: 'application/json',
             Authorization: `Bearer ${this.accessTokenV3}`,
           },
-        }),
+        })
       );
 
       if (!response?.data?.success) {
@@ -43,10 +37,7 @@ export class AuthMiddleware implements NestMiddleware {
     } catch (error) {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
-        const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to authentication TMDB.';
+        const message = error.response?.data?.status_message || error.message || 'Failed to authentication TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -54,9 +45,7 @@ export class AuthMiddleware implements NestMiddleware {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 }

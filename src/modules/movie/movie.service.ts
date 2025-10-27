@@ -4,10 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { MovieRepository } from '@App/modules/movie/repositories/movie.repository';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import {
-  IFindAllMovies,
-  IMovie,
-} from '@App/modules/movie/interfaces/movie.interface';
+import { IFindAllMovies, IMovie } from '@App/modules/movie/interfaces/movie.interface';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { genresObj } from '@App/modules/movie/constants/movie.enum.constants';
@@ -33,13 +30,12 @@ export class MovieService {
     private readonly movieRepository: MovieRepository,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
     this.baseUrl = this.configService.get<string>('services.movie.url');
     this.apiKey = this.configService.get<string>('services.movie.apiKey');
-        this.accessTokenV3 = this.configService.get<string>('services.movie.accessTokenV3');
+    this.accessTokenV3 = this.configService.get<string>('services.movie.accessTokenV3');
     this.sessionId = this.configService.get<string>('services.movie.sessionId');
-
   }
 
   async findAll(query: FindAllMoviesDto): Promise<IFindAllMovies> {
@@ -55,11 +51,7 @@ export class MovieService {
       }
       if (withGenres) {
         const genresIds = Array.isArray(withGenres)
-          ? withGenres?.reduce(
-              (accumulator, currentValue) =>
-                accumulator + genresObj[currentValue] + ',',
-              '',
-            )
+          ? withGenres?.reduce((accumulator, currentValue) => accumulator + genresObj[currentValue] + ',', '')
           : withGenres;
         apiUrl += `&with_genres=${genresIds}`;
       }
@@ -69,20 +61,17 @@ export class MovieService {
           headers: {
             accept: 'application/json',
           },
-        }),
+        })
       );
 
-      const results =
-        response?.data?.results && Array.isArray(response.data?.results)
-          ? response.data.results
-          : [];
+      const results = response?.data?.results && Array.isArray(response.data?.results) ? response.data.results : [];
 
       if (Array.isArray(results) && results?.length) {
         await this.movieRepository.upsertMany(results);
         await Promise.all(
           results.map(async (movie) => {
             this.cacheManager.set(`movie:${movie.id}`, { ...movie });
-          }),
+          })
         );
       }
 
@@ -91,9 +80,7 @@ export class MovieService {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to fetch movies details from TMDB.';
+          error.response?.data?.status_message || error.message || 'Failed to fetch movies details from TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -101,9 +88,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
@@ -124,8 +109,8 @@ export class MovieService {
               'content-type': 'application/json',
               Authorization: `Bearer ${this.accessTokenV3}`,
             },
-          },
-        ),
+          }
+        )
       );
 
       const movie = response.data;
@@ -137,9 +122,7 @@ export class MovieService {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to fetch movie details from TMDB.';
+          error.response?.data?.status_message || error.message || 'Failed to fetch movie details from TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -147,9 +130,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
@@ -161,14 +142,11 @@ export class MovieService {
       if (existing) return existing;
 
       const response = await firstValueFrom(
-        this.httpService.get(
-          `${this.baseUrl}/3/movie/${id}?api_key=${this.apiKey}`,
-          {
-            headers: {
-              accept: 'application/json',
-            },
+        this.httpService.get(`${this.baseUrl}/3/movie/${id}?api_key=${this.apiKey}`, {
+          headers: {
+            accept: 'application/json',
           },
-        ),
+        })
       );
 
       const movie = response.data;
@@ -184,9 +162,7 @@ export class MovieService {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to fetch movie details from TMDB.';
+          error.response?.data?.status_message || error.message || 'Failed to fetch movie details from TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -194,9 +170,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
@@ -216,16 +190,13 @@ export class MovieService {
               'content-type': 'application/json',
               Authorization: `Bearer ${this.accessTokenV3}`,
             },
-          },
-        ),
+          }
+        )
       );
     } catch (error) {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
-        const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to movie add to watch TMDB.';
+        const message = error.response?.data?.status_message || error.message || 'Failed to movie add to watch TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -233,9 +204,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
@@ -255,16 +224,14 @@ export class MovieService {
               'content-type': 'application/json',
               Authorization: `Bearer ${this.accessTokenV3}`,
             },
-          },
-        ),
+          }
+        )
       );
     } catch (error) {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to movie add to favorite TMDB.';
+          error.response?.data?.status_message || error.message || 'Failed to movie add to favorite TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -272,9 +239,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
@@ -292,16 +257,13 @@ export class MovieService {
               'content-type': 'application/json',
               Authorization: `Bearer ${this.accessTokenV3}`,
             },
-          },
-        ),
+          }
+        )
       );
     } catch (error) {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
-        const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to movie add to watch TMDB.';
+        const message = error.response?.data?.status_message || error.message || 'Failed to movie add to watch TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -309,23 +271,18 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 
   async findGenres() {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(
-          `${this.baseUrl}/3/genre/movie/list?language=en?api_key=${this.apiKey}`,
-          {
-            headers: {
-              accept: 'application/json',
-            },
+        this.httpService.get(`${this.baseUrl}/3/genre/movie/list?language=en?api_key=${this.apiKey}`, {
+          headers: {
+            accept: 'application/json',
           },
-        ),
+        })
       );
 
       return response.data;
@@ -333,9 +290,7 @@ export class MovieService {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
         const message =
-          error.response?.data?.status_message ||
-          error.message ||
-          'Failed to fetch genre details from TMDB.';
+          error.response?.data?.status_message || error.message || 'Failed to fetch genre details from TMDB.';
 
         throw new BadRequestException({
           statusCode,
@@ -343,9 +298,7 @@ export class MovieService {
         });
       }
 
-      throw new BadRequestException(
-        error?.message || 'An unexpected error occurred.',
-      );
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
     }
   }
 }

@@ -19,15 +19,11 @@ export abstract class BaseRepository<T> {
     return this.model;
   }
 
-  async findAll(
-    query?: IFindAll,
-  ): Promise<{ data: Array<T>; page?: IPagination }> {
+  async findAll(query?: IFindAll): Promise<{ data: Array<T>; page?: IPagination }> {
     const { page, perPage, where, select, orderBy, populate } = query || {};
     const { take, skip } = generatePagination(page, perPage) || {};
     const count = await this.count(query);
-    const sortCriteria: ISort = orderBy
-      ? transformSort(orderBy)
-      : { updatedAt: -1, createdAt: 1 };
+    const sortCriteria: ISort = orderBy ? transformSort(orderBy) : { updatedAt: -1, createdAt: 1 };
     const populateOptions: (string | PopulateOptions)[] = populate
       ? Array.isArray(populate)
         ? populate
@@ -75,11 +71,7 @@ export abstract class BaseRepository<T> {
     return this.model.create(data);
   }
 
-  async updateById(
-    id: string,
-    data: object,
-    query?: IFindOne,
-  ): Promise<T | null> {
+  async updateById(id: string, data: object, query?: IFindOne): Promise<T | null> {
     const { select, populate, where, options = {} } = query || {};
     const populateOptions: (string | PopulateOptions)[] = populate
       ? Array.isArray(populate)

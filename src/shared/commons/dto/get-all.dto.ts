@@ -2,14 +2,7 @@ import { SortDto } from '@App/shared/commons/dto/sort.dto';
 import { IsValidSort } from '@App/shared/validator/is-valid-sort.decorator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import {
-  IsInt,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsInt, IsNumber, IsObject, IsOptional, IsString, Min } from 'class-validator';
 
 export class GetAllDto {
   @ApiPropertyOptional()

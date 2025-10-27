@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsBoolean,
-  IsDateString,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateMovieDto {
   @ApiProperty({ example: '/iZLqwEwUViJdSkGVjePGhxYzbDb.jpg' })
@@ -29,8 +23,7 @@ export class CreateMovieDto {
   original_title: string;
 
   @ApiProperty({
-    example:
-      'Will Radford is a top analyst for Homeland Security who tracks potential threats...',
+    example: 'Will Radford is a top analyst for Homeland Security who tracks potential threats...',
   })
   @IsString()
   overview: string;

@@ -4,19 +4,11 @@ import { MovieService } from '@App/modules/movie/movie.service';
 import { MovieRepository } from '@App/modules/movie/repositories/movie.repository';
 import { Movie, MovieSchema } from '@App/shared/schemas/movie.schema';
 import { HttpModule } from '@nestjs/axios';
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [
-    HttpModule,
-    MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }]),
-  ],
+  imports: [HttpModule, MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }])],
   controllers: [MovieController],
   providers: [MovieService, MovieRepository],
 })
@@ -30,7 +22,7 @@ export class MovieModule implements NestModule {
         { path: 'v1/movie/:id', method: RequestMethod.GET },
         { path: 'v1/movie/addToWatch', method: RequestMethod.POST },
         { path: 'v1/movie/addToFavorite', method: RequestMethod.POST },
-        { path: 'v1/movie/makeRate', method: RequestMethod.POST },
+        { path: 'v1/movie/makeRate', method: RequestMethod.POST }
       );
   }
 }
