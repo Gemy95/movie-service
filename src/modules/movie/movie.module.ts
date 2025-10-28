@@ -11,6 +11,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [HttpModule, MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }])],
   controllers: [MovieController],
   providers: [MovieService, MovieRepository],
+  exports: [MovieService, MovieRepository],
 })
 export class MovieModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

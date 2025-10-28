@@ -11,6 +11,8 @@ import { CacheableMemory } from 'cacheable';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '@App/modules/auth/auth.module';
 import { MovieModule } from '@App/modules/movie/movie.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SyncModule } from '@App/modules/sync/sync.module';
 
 @Module({
   imports: [
@@ -67,6 +69,8 @@ import { MovieModule } from '@App/modules/movie/movie.module';
       },
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
+    SyncModule,
     AuthModule,
     MovieModule,
   ],

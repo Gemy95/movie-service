@@ -150,14 +150,15 @@ export class MovieService {
       );
 
       const movie = response.data;
+      let created;
+      if (movie) {
+        created = await this.movieRepository.create({
+          ...movie,
+        });
+        await this.cacheManager.set(`movie:${movie.id}`, { ...movie });
+      }
 
-      const created = await this.movieRepository.create({
-        ...movie,
-      });
-
-      await this.cacheManager.set(`movie:${movie.id}`, { ...movie });
-
-      return created;
+      return created ? created : movie;
     } catch (error) {
       if (error instanceof AxiosError) {
         const statusCode = error.response?.status || 400;
