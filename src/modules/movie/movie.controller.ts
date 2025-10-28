@@ -62,7 +62,7 @@ export class MovieController {
     };
   }
 
-  @ApiOperation({ summary: 'Add to watch' })
+  @ApiOperation({ summary: 'Add To Watch' })
   @ApiHeader({
     name: 'x-api-key',
     description: 'API Key for authentication',
@@ -84,7 +84,7 @@ export class MovieController {
     return this.movieService.addToWatch(dto);
   }
 
-  @ApiOperation({ summary: 'Add to Favorite' })
+  @ApiOperation({ summary: 'Add To Favorite' })
   @ApiHeader({
     name: 'x-api-key',
     description: 'API Key for authentication',
