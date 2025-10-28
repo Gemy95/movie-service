@@ -30,7 +30,6 @@ describe('AuthService', () => {
   });
 
   it('should return false if config has no API_KEY set', async () => {
-
     jest.spyOn(configService, 'get').mockReturnValue(undefined);
 
     const result = await authService.validateApiKey('any-key');

@@ -15,30 +15,6 @@ import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
-  @ApiOperation({ summary: 'Create New Movie' })
-  @ApiBody({
-    description: 'Movie details to create',
-    type: CreateMovieDto,
-    required: true,
-  })
-  @ApiHeader({
-    name: 'x-api-key',
-    description: 'API Key for authentication',
-    required: true,
-    example: 'my-secret-key',
-  })
-  @ApiResponse({ status: 200, description: 'Movie created successfully' })
-  @UseGuards(AuthGuard('api-key'))
-  @Post('')
-  async create(@Body() dto: CreateMovieDto): Promise<ICreateMovieResponse> {
-    const createdMovie = await this.movieService.create(dto);
-
-    return {
-      id: createdMovie.id,
-      attributes: createdMovie,
-    };
-  }
-
   @ApiOperation({ summary: 'Fetch One Movie' })
   @ApiHeader({
     name: 'x-api-key',
@@ -150,5 +126,29 @@ export class MovieController {
   @Post('makeRate')
   async makeRate(@Body() dto: RateMovieDto): Promise<void> {
     return this.movieService.makeRate(dto);
+  }
+
+  @ApiOperation({ summary: 'Create New Movie' })
+  @ApiBody({
+    description: 'Movie details to create',
+    type: CreateMovieDto,
+    required: true,
+  })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
+  @ApiResponse({ status: 200, description: 'Movie created successfully' })
+  @UseGuards(AuthGuard('api-key'))
+  @Post('')
+  async create(@Body() dto: CreateMovieDto): Promise<ICreateMovieResponse> {
+    const createdMovie = await this.movieService.create(dto);
+
+    return {
+      id: createdMovie.id,
+      attributes: createdMovie,
+    };
   }
 }

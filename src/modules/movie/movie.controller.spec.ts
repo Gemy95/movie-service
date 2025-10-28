@@ -51,7 +51,7 @@ describe('MovieController', () => {
         release_date: '',
         video: false,
         vote_average: 0,
-        vote_count: 0
+        vote_count: 0,
       };
       const mockMovie = { id: 1, title: 'Inception' };
       mockMovieService.create.mockResolvedValue(mockMovie);
