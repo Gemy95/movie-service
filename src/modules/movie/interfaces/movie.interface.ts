@@ -18,7 +18,7 @@ export interface IMovie {
   updatedAt?: Date;
 }
 
-export interface ICreateMovieResponse {
+export interface IMovieResponse {
   id: number;
   attributes: IMovie;
 }
@@ -31,6 +31,21 @@ export interface IFindAllMovies {
 }
 
 export interface IFindAllMoviesResponse {
-  data: ICreateMovieResponse[];
+  data: IMovieResponse[];
+  pagination: IPagination;
+}
+
+export interface IFindOneMovieResponse {
+  id: number;
+  attributes: IMovie;
+}
+
+export interface IFindAllFavoriteMoviesResponse {
+  data: IMovieResponse[];
+  pagination: IPagination;
+}
+
+export interface IFindAllWatchMoviesResponse {
+  data: IMovieResponse[];
   pagination: IPagination;
 }

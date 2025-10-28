@@ -13,6 +13,8 @@ import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
 import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
+import { FindAllFavoriteMoviesDto } from '@App/modules/movie/dto/find-all-favorite-movie.dto';
+import { FindAllWatchMoviesDto } from '@App/modules/movie/dto/find-all-watch-movie.dto';
 
 // const accessTokenV4 =
 //   'eyJhbGciOiJIUzI1NiIsInR5cCIdIkpXVCJ9.eyJuYmYiOjE0ODM1NzM4MzUsInZlcnNpb24iOjEsInN1YiI6IjRiYzg4OTJhMDE3YTNjMGY5MjAwMDAwMiIsImF1ZCI6IlNmODc4NTdiZTIwOWQzNTE5ODMzYjMwMGExM2QwZTEyIiwic2NvcGVzIjpbImFwaV9yZWFkIiwiYXBpX3dyaXRlIl0sImp0aSI6Ijg4In0.b76OiEs10gdp9oNOoGpBJ94nO9Zi17Y7SvAXJQW8nH2';
@@ -81,6 +83,94 @@ export class MovieService {
         const statusCode = error.response?.status || 400;
         const message =
           error.response?.data?.status_message || error.message || 'Failed to fetch movies details from TMDB.';
+
+        throw new BadRequestException({
+          statusCode,
+          message,
+        });
+      }
+
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
+    }
+  }
+
+  async findAllFavorite(query: FindAllFavoriteMoviesDto): Promise<IFindAllMovies> {
+    try {
+      const { page } = query || {};
+
+      const apiUrl = `${this.baseUrl}/3/account/${this.accountId}/favorite/movies?page=${page}`;
+
+      const response = await firstValueFrom(
+        this.httpService.get(apiUrl, {
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${this.accessTokenV3}`,
+          },
+        })
+      );
+
+      const results = response?.data?.results && Array.isArray(response.data?.results) ? response.data.results : [];
+
+      if (Array.isArray(results) && results?.length) {
+        await this.movieRepository.upsertMany(results);
+        await Promise.all(
+          results.map(async (movie) => {
+            this.cacheManager.set(`movie:${movie.id}`, { ...movie });
+          })
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status || 400;
+        const message =
+          error.response?.data?.status_message || error.message || 'Failed to fetch favorite movies details from TMDB.';
+
+        throw new BadRequestException({
+          statusCode,
+          message,
+        });
+      }
+
+      throw new BadRequestException(error?.message || 'An unexpected error occurred.');
+    }
+  }
+
+  async findAllWatch(query: FindAllWatchMoviesDto): Promise<IFindAllMovies> {
+    try {
+      const { page } = query || {};
+
+      const apiUrl = `${this.baseUrl}/3/account/${this.accountId}/watchlist/movies?page=${page}`;
+
+      const response = await firstValueFrom(
+        this.httpService.get(apiUrl, {
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${this.accessTokenV3}`,
+          },
+        })
+      );
+
+      const results = response?.data?.results && Array.isArray(response.data?.results) ? response.data.results : [];
+
+      if (Array.isArray(results) && results?.length) {
+        await this.movieRepository.upsertMany(results);
+        await Promise.all(
+          results.map(async (movie) => {
+            this.cacheManager.set(`movie:${movie.id}`, { ...movie });
+          })
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status || 400;
+        const message =
+          error.response?.data?.status_message || error.message || 'Failed to fetch favorite movies details from TMDB.';
 
         throw new BadRequestException({
           statusCode,

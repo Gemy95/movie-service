@@ -15,7 +15,7 @@ export class SyncService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleSyncMoviesCron(): Promise<void> {
     this.logger.log('Starting movie synchronization job...');
 

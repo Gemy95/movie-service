@@ -1,9 +1,18 @@
 import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
+import { FindAllFavoriteMoviesDto } from '@App/modules/movie/dto/find-all-favorite-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
+import { FindAllWatchMoviesDto } from '@App/modules/movie/dto/find-all-watch-movie.dto';
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
-import { ICreateMovieResponse, IFindAllMoviesResponse, IMovie } from '@App/modules/movie/interfaces/movie.interface';
+import {
+  IMovieResponse,
+  IFindAllMoviesResponse,
+  IFindOneMovieResponse,
+  IMovie,
+  IFindAllFavoriteMoviesResponse,
+  IFindAllWatchMoviesResponse,
+} from '@App/modules/movie/interfaces/movie.interface';
 import { MovieService } from '@App/modules/movie/movie.service';
 import { swaggerTags } from '@App/shared/constants/swagger.tags.constant';
 import { Body, Controller, Post, Query, Get, UseGuards } from '@nestjs/common';
@@ -14,25 +23,6 @@ import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/
 @Controller({ path: '/movie', version: ['1'] })
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
-
-  @ApiOperation({ summary: 'Fetch One Movie' })
-  @ApiHeader({
-    name: 'x-api-key',
-    description: 'API Key for authentication',
-    required: true,
-    example: 'my-secret-key',
-  })
-  @ApiResponse({ status: 200, description: 'Movie fetched successfully' })
-  @UseGuards(AuthGuard('api-key'))
-  @Get(':id')
-  async findOne(@Query('id') id: string): Promise<ICreateMovieResponse> {
-    const movie = await this.movieService.findOne(id);
-
-    return {
-      id: movie.id,
-      attributes: movie,
-    };
-  }
 
   @ApiOperation({ summary: 'Fetch All Movies' })
   @ApiHeader({
@@ -59,6 +49,81 @@ export class MovieController {
         pages: movies.total_pages || 0,
         count: movies.total_results || 0,
       },
+    };
+  }
+
+  @ApiOperation({ summary: 'Fetch All Favorite Movies' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
+  @ApiResponse({ status: 200, description: 'Favorite Movies fetched successfully' })
+  @UseGuards(AuthGuard('api-key'))
+  @Get('favorite')
+  async findAllFavorite(@Query() query: FindAllFavoriteMoviesDto): Promise<IFindAllFavoriteMoviesResponse> {
+    const movies = await this.movieService.findAllFavorite(query);
+    const data = (movies?.results || [])?.map((movie: IMovie) => {
+      return {
+        id: movie.id,
+        attributes: movie,
+      };
+    });
+    return {
+      data,
+      pagination: {
+        page: movies.page || 0,
+        pages: movies.total_pages || 0,
+        count: movies.total_results || 0,
+      },
+    };
+  }
+
+  @ApiOperation({ summary: 'Fetch All Watch Movies' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
+  @ApiResponse({ status: 200, description: 'Watch Movies fetched successfully' })
+  @UseGuards(AuthGuard('api-key'))
+  @Get('watch')
+  async findAllWatch(@Query() query: FindAllWatchMoviesDto): Promise<IFindAllWatchMoviesResponse> {
+    const movies = await this.movieService.findAllWatch(query);
+    const data = (movies?.results || [])?.map((movie: IMovie) => {
+      return {
+        id: movie.id,
+        attributes: movie,
+      };
+    });
+    return {
+      data,
+      pagination: {
+        page: movies.page || 0,
+        pages: movies.total_pages || 0,
+        count: movies.total_results || 0,
+      },
+    };
+  }
+
+  @ApiOperation({ summary: 'Fetch One Movie' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'API Key for authentication',
+    required: true,
+    example: 'my-secret-key',
+  })
+  @ApiResponse({ status: 200, description: 'Movie fetched successfully' })
+  @UseGuards(AuthGuard('api-key'))
+  @Get(':id')
+  async findOne(@Query('id') id: string): Promise<IFindOneMovieResponse> {
+    const movie = await this.movieService.findOne(id);
+
+    return {
+      id: movie.id,
+      attributes: movie,
     };
   }
 
@@ -143,7 +208,7 @@ export class MovieController {
   @ApiResponse({ status: 200, description: 'Movie created successfully' })
   @UseGuards(AuthGuard('api-key'))
   @Post('')
-  async create(@Body() dto: CreateMovieDto): Promise<ICreateMovieResponse> {
+  async create(@Body() dto: CreateMovieDto): Promise<IMovieResponse> {
     const createdMovie = await this.movieService.create(dto);
 
     return {
