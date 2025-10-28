@@ -67,8 +67,11 @@ const mockConfigService = {
 
 describe('MovieService', () => {
   let service: MovieService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let httpService: HttpService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let movieRepository: MovieRepository;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let cacheManager: any;
 
   beforeEach(async () => {
