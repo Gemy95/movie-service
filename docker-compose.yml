@@ -6,7 +6,7 @@ services:
     container_name: nestjs-app
     restart: always
     ports:
-      - "5000:5000"
+      - "8080:8080"
     depends_on:
       - redis
     environment:
