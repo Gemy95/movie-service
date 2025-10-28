@@ -77,6 +77,10 @@ class EnvironmentVariables {
   @IsNotEmpty()
   @IsString()
   MOVIE_SESSION_ID: string;
+
+  @IsNotEmpty()
+  @IsString()
+  MOVIE_ACCOUNT_ID: string;
 }
 
 export function validate(config: Record<string, unknown>) {

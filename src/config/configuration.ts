@@ -17,6 +17,7 @@ export interface Movie {
   apiKey: string;
   accessTokenV3: string;
   sessionId: string;
+  accountId: string;
 }
 export interface Services {
   movie: Movie;
@@ -66,6 +67,7 @@ export const configuration = (): Configuration => {
         apiKey: process.env.MOVIE_API_KEY,
         accessTokenV3: process.env.MOVIE_ACCESS_TOKEN_V3,
         sessionId: process.env.MOVIE_SESSION_ID,
+        accountId: process.env.MOVIE_ACCOUNT_ID,
       },
     },
   };

@@ -14,8 +14,6 @@ import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-mo
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 
-const listId = 120174;
-const accountId = '22414830';
 // const accessTokenV4 =
 //   'eyJhbGciOiJIUzI1NiIsInR5cCIdIkpXVCJ9.eyJuYmYiOjE0ODM1NzM4MzUsInZlcnNpb24iOjEsInN1YiI6IjRiYzg4OTJhMDE3YTNjMGY5MjAwMDAwMiIsImF1ZCI6IlNmODc4NTdiZTIwOWQzNTE5ODMzYjMwMGExM2QwZTEyIiwic2NvcGVzIjpbImFwaV9yZWFkIiwiYXBpX3dyaXRlIl0sImp0aSI6Ijg4In0.b76OiEs10gdp9oNOoGpBJ94nO9Zi17Y7SvAXJQW8nH2';
 
@@ -25,6 +23,7 @@ export class MovieService {
   private readonly apiKey;
   private readonly accessTokenV3;
   private readonly sessionId;
+  private readonly accountId;
 
   constructor(
     private readonly movieRepository: MovieRepository,
@@ -36,6 +35,7 @@ export class MovieService {
     this.apiKey = this.configService.get<string>('services.movie.apiKey');
     this.accessTokenV3 = this.configService.get<string>('services.movie.accessTokenV3');
     this.sessionId = this.configService.get<string>('services.movie.sessionId');
+    this.accountId = this.configService.get<string>('services.movie.accountId');
   }
 
   async findAll(query: FindAllMoviesDto): Promise<IFindAllMovies> {
@@ -98,6 +98,8 @@ export class MovieService {
         where: { id: dto.media_id },
       });
       if (existing) return existing;
+
+      const listId = 120174;
 
       const response = await firstValueFrom(
         this.httpService.post(
@@ -179,7 +181,7 @@ export class MovieService {
     try {
       await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/3/account/${accountId}/watchlist?api_key=${this.apiKey}`,
+          `${this.baseUrl}/3/account/${this.accountId}/watchlist?api_key=${this.apiKey}`,
           {
             media_type: 'movie',
             media_id: dto.media_id,
@@ -213,7 +215,7 @@ export class MovieService {
     try {
       await firstValueFrom(
         this.httpService.post(
-          `${this.baseUrl}/3/account/${accountId}/favorite?api_key=${this.apiKey}`,
+          `${this.baseUrl}/3/account/${this.accountId}/favorite?api_key=${this.apiKey}`,
           {
             media_type: 'movie',
             media_id: dto.media_id,
