@@ -16,11 +16,8 @@ import type { Cache } from 'cache-manager';
 import { FindAllFavoriteMoviesDto } from '@App/modules/movie/dto/find-all-favorite-movie.dto';
 import { FindAllWatchMoviesDto } from '@App/modules/movie/dto/find-all-watch-movie.dto';
 
-// const accessTokenV4 =
-//   'eyJhbGciOiJIUzI1NiIsInR5cCIdIkpXVCJ9.eyJuYmYiOjE0ODM1NzM4MzUsInZlcnNpb24iOjEsInN1YiI6IjRiYzg4OTJhMDE3YTNjMGY5MjAwMDAwMiIsImF1ZCI6IlNmODc4NTdiZTIwOWQzNTE5ODMzYjMwMGExM2QwZTEyIiwic2NvcGVzIjpbImFwaV9yZWFkIiwiYXBpX3dyaXRlIl0sImp0aSI6Ijg4In0.b76OiEs10gdp9oNOoGpBJ94nO9Zi17Y7SvAXJQW8nH2';
-
 @Injectable()
-export class MovieService {
+export class MovieApiService {
   private readonly baseUrl;
   private readonly apiKey;
   private readonly accessTokenV3;

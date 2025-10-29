@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@App/modules/auth/auth.middleware';
-import { MovieController } from '@App/modules/movie/movie.controller';
-import { MovieService } from '@App/modules/movie/movie.service';
+import { MovieApiController } from '@App/modules/movie/api/movie.api.controller';
+import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
 import { MovieRepository } from '@App/modules/movie/repositories/movie.repository';
 import { Movie, MovieSchema } from '@App/shared/schemas/movie.schema';
 import { HttpModule } from '@nestjs/axios';
@@ -9,9 +9,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [HttpModule, MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }])],
-  controllers: [MovieController],
-  providers: [MovieService, MovieRepository],
-  exports: [MovieService, MovieRepository],
+  controllers: [MovieApiController],
+  providers: [MovieApiService, MovieRepository],
+  exports: [MovieApiService, MovieRepository],
 })
 export class MovieModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -12,7 +12,7 @@ import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dt
 import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
 import { Genre, genresObj } from '@App/modules/movie/constants/movie.enum.constants';
-import { MovieService } from '@App/modules/movie/movie.service';
+import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
 
 const mockMovie = {
   id: '1',
@@ -60,13 +60,14 @@ const mockConfigService = {
       'services.movie.apiKey': 'test-api-key',
       'services.movie.accessTokenV3': 'test-token-v3',
       'services.movie.sessionId': 'test-session-id',
+      'services.movie.accountId': '22414830',
     };
     return config[key];
   }),
 };
 
 describe('MovieService', () => {
-  let service: MovieService;
+  let service: MovieApiService;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let httpService: HttpService;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,7 +78,7 @@ describe('MovieService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MovieService,
+        MovieApiService,
         { provide: MovieRepository, useValue: mockMovieRepository },
         { provide: HttpService, useValue: mockHttpService },
         { provide: ConfigService, useValue: mockConfigService },
@@ -85,7 +86,7 @@ describe('MovieService', () => {
       ],
     }).compile();
 
-    service = module.get<MovieService>(MovieService);
+    service = module.get<MovieApiService>(MovieApiService);
     httpService = module.get<HttpService>(HttpService);
     movieRepository = module.get<MovieRepository>(MovieRepository);
     cacheManager = module.get(CACHE_MANAGER);

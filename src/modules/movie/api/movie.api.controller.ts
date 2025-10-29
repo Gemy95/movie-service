@@ -13,7 +13,7 @@ import {
   IFindAllFavoriteMoviesResponse,
   IFindAllWatchMoviesResponse,
 } from '@App/modules/movie/interfaces/movie.interface';
-import { MovieService } from '@App/modules/movie/movie.service';
+import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
 import { swaggerTags } from '@App/shared/constants/swagger.tags.constant';
 import { Body, Controller, Post, Query, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -21,8 +21,8 @@ import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/
 
 @ApiTags(swaggerTags.Movie)
 @Controller({ path: '/movie', version: ['1'] })
-export class MovieController {
-  constructor(private readonly movieService: MovieService) {}
+export class MovieApiController {
+  constructor(private readonly movieApiService: MovieApiService) {}
 
   @ApiOperation({ summary: 'Fetch All Movies' })
   @ApiHeader({
@@ -35,7 +35,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Get('')
   async findAll(@Query() query: FindAllMoviesDto): Promise<IFindAllMoviesResponse> {
-    const movies = await this.movieService.findAll(query);
+    const movies = await this.movieApiService.findAll(query);
     const data = (movies?.results || [])?.map((movie: IMovie) => {
       return {
         id: movie.id,
@@ -63,7 +63,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Get('favorite')
   async findAllFavorite(@Query() query: FindAllFavoriteMoviesDto): Promise<IFindAllFavoriteMoviesResponse> {
-    const movies = await this.movieService.findAllFavorite(query);
+    const movies = await this.movieApiService.findAllFavorite(query);
     const data = (movies?.results || [])?.map((movie: IMovie) => {
       return {
         id: movie.id,
@@ -91,7 +91,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Get('watch')
   async findAllWatch(@Query() query: FindAllWatchMoviesDto): Promise<IFindAllWatchMoviesResponse> {
-    const movies = await this.movieService.findAllWatch(query);
+    const movies = await this.movieApiService.findAllWatch(query);
     const data = (movies?.results || [])?.map((movie: IMovie) => {
       return {
         id: movie.id,
@@ -119,7 +119,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Get(':id')
   async findOne(@Query('id') id: string): Promise<IFindOneMovieResponse> {
-    const movie = await this.movieService.findOne(id);
+    const movie = await this.movieApiService.findOne(id);
 
     return {
       id: movie.id,
@@ -146,7 +146,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Post('addToWatch')
   async addToWatch(@Body() dto: AddToWatchMovieDto): Promise<void> {
-    return this.movieService.addToWatch(dto);
+    return this.movieApiService.addToWatch(dto);
   }
 
   @ApiOperation({ summary: 'Add To Favorite' })
@@ -168,7 +168,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Post('addToFavorite')
   async addToFavorite(@Body() dto: AddToFavoriteMovieDto): Promise<void> {
-    return this.movieService.addToFavorite(dto);
+    return this.movieApiService.addToFavorite(dto);
   }
 
   @ApiOperation({ summary: 'Rate Movie' })
@@ -190,7 +190,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Post('makeRate')
   async makeRate(@Body() dto: RateMovieDto): Promise<void> {
-    return this.movieService.makeRate(dto);
+    return this.movieApiService.makeRate(dto);
   }
 
   @ApiOperation({ summary: 'Create New Movie' })
@@ -209,7 +209,7 @@ export class MovieController {
   @UseGuards(AuthGuard('api-key'))
   @Post('')
   async create(@Body() dto: CreateMovieDto): Promise<IMovieResponse> {
-    const createdMovie = await this.movieService.create(dto);
+    const createdMovie = await this.movieApiService.create(dto);
 
     return {
       id: createdMovie.id,

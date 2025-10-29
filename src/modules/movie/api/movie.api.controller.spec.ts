@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MovieService } from '@App/modules/movie/movie.service';
+import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
 import { CreateMovieDto } from '@App/modules/movie/dto/create-movie.dto';
 import { FindAllMoviesDto } from '@App/modules/movie/dto/find-all-movie.dto';
 import { AddToWatchMovieDto } from '@App/modules/movie/dto/add-to-watch-movie.dto';
 import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-movie.dto';
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
-import { MovieController } from '@App/modules/movie/movie.controller';
+import { MovieApiController } from '@App/modules/movie/api/movie.api.controller';
 
-describe('MovieController', () => {
-  let controller: MovieController;
-  let service: MovieService;
+describe('MovieApiController', () => {
+  let controller: MovieApiController;
+  let service: MovieApiService;
 
   const mockMovieService = {
     create: jest.fn(),
@@ -22,17 +22,17 @@ describe('MovieController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [MovieController],
+      controllers: [MovieApiController],
       providers: [
         {
-          provide: MovieService,
+          provide: MovieApiService,
           useValue: mockMovieService,
         },
       ],
     }).compile();
 
-    controller = module.get<MovieController>(MovieController);
-    service = module.get<MovieService>(MovieService);
+    controller = module.get<MovieApiController>(MovieApiController);
+    service = module.get<MovieApiService>(MovieApiService);
     jest.clearAllMocks();
   });
 

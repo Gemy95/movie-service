@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { MovieService } from '@App/modules/movie/movie.service';
+import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
 import { MovieRepository } from '@App/modules/movie/repositories/movie.repository';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
@@ -10,7 +10,7 @@ export class SyncService {
   private readonly logger = new Logger(SyncService.name);
 
   constructor(
-    private readonly movieService: MovieService,
+    private readonly movieApiService: MovieApiService,
     private readonly movieRepository: MovieRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
@@ -24,7 +24,7 @@ export class SyncService {
 
     try {
       do {
-        const data = await this.movieService.findAll({ page });
+        const data = await this.movieApiService.findAll({ page });
 
         if (!data?.results?.length) {
           this.logger.warn(`No results found on page ${page}.`);
