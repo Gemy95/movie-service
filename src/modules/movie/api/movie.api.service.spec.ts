@@ -13,6 +13,7 @@ import { AddToFavoriteMovieDto } from '@App/modules/movie/dto/add-to-favorite-mo
 import { RateMovieDto } from '@App/modules/movie/dto/rate-movie.dto';
 import { Genre, genresObj } from '@App/modules/movie/constants/movie.enum.constants';
 import { MovieApiService } from '@App/modules/movie/api/movie.api.service';
+import { FindAllWatchMoviesDto } from '@App/modules/movie/dto/find-all-watch-movie.dto';
 
 const mockMovie = {
   id: '1',
@@ -740,6 +741,156 @@ describe('MovieService', () => {
       mockHttpService.get.mockReturnValue(throwError(() => genericError));
 
       await expect(service.findGenres()).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('findAllFavorite', () => {
+    it('should return favorite movies', async () => {
+      const query = { page: 1 };
+      const mockResponse: AxiosResponse = {
+        data: mockMoviesList,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          headers: undefined,
+        },
+      };
+
+      mockHttpService.get.mockReturnValue(of(mockResponse));
+      mockMovieRepository.upsertMany.mockResolvedValue(undefined);
+      mockCacheManager.set.mockResolvedValue(undefined);
+
+      const result = await service.findAllFavorite(query);
+
+      expect(result).toEqual(mockMoviesList);
+      expect(mockHttpService.get).toHaveBeenCalledWith(
+        'https://api.themoviedb.org/3/account/22414830/favorite/movies?page=1',
+        {
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: 'Bearer test-token-v3',
+          },
+        }
+      );
+    });
+
+    it('should handle AxiosError with response', async () => {
+      const axiosError = {
+        name: 'AxiosError',
+        message: 'Fail',
+        response: { status: 400, data: { status_message: 'Error' } },
+        isAxiosError: true,
+      } as AxiosError;
+      mockHttpService.get.mockReturnValue(throwError(() => axiosError));
+
+      await expect(service.findAllFavorite({})).rejects.toThrow(BadRequestException);
+    });
+
+    it('should handle AxiosError without response', async () => {
+      const axiosError = { name: 'AxiosError', message: 'Network fail', isAxiosError: true } as AxiosError;
+      mockHttpService.get.mockReturnValue(throwError(() => axiosError));
+
+      await expect(service.findAllFavorite({})).rejects.toThrow(BadRequestException);
+    });
+
+    it('should handle generic error', async () => {
+      const genericError = new Error('Generic fail');
+      mockHttpService.get.mockReturnValue(throwError(() => genericError));
+
+      await expect(service.findAllFavorite({})).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('findAllWatch', () => {
+    it('should return watchlist movies', async () => {
+      const query: FindAllWatchMoviesDto = { page: 1 };
+      const mockResponse: AxiosResponse = {
+        data: mockMoviesList,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: { headers: undefined },
+      };
+
+      mockHttpService.get.mockReturnValue(of(mockResponse));
+      mockMovieRepository.upsertMany.mockResolvedValue(undefined);
+      mockCacheManager.set.mockResolvedValue(undefined);
+
+      const result = await service.findAllWatch(query);
+
+      expect(result).toEqual(mockMoviesList);
+      expect(mockHttpService.get).toHaveBeenCalledWith(
+        'https://api.themoviedb.org/3/account/22414830/watchlist/movies?page=1',
+        {
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: 'Bearer test-token-v3',
+          },
+        }
+      );
+      expect(mockMovieRepository.upsertMany).toHaveBeenCalledWith(mockMoviesList.results);
+      expect(mockCacheManager.set).toHaveBeenCalledTimes(mockMoviesList.results.length);
+    });
+
+    it('should handle empty results array', async () => {
+      const query: FindAllWatchMoviesDto = { page: 1 };
+      const mockResponse: AxiosResponse = {
+        data: { results: [] },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: { headers: undefined },
+      };
+
+      mockHttpService.get.mockReturnValue(of(mockResponse));
+
+      const result = await service.findAllWatch(query);
+
+      expect(result.results).toEqual([]);
+      expect(mockMovieRepository.upsertMany).not.toHaveBeenCalled();
+      expect(mockCacheManager.set).not.toHaveBeenCalled();
+    });
+
+    it('should handle AxiosError with response', async () => {
+      const query: FindAllWatchMoviesDto = {};
+      const axiosError = {
+        name: 'AxiosError',
+        message: 'Request failed',
+        response: {
+          status: 404,
+          data: { status_message: 'Not found' },
+        },
+        isAxiosError: true,
+      } as AxiosError;
+
+      mockHttpService.get.mockReturnValue(throwError(() => axiosError));
+
+      await expect(service.findAllWatch(query)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should handle AxiosError without response', async () => {
+      const query: FindAllWatchMoviesDto = {};
+      const axiosError = {
+        name: 'AxiosError',
+        message: 'Network error',
+        isAxiosError: true,
+      } as AxiosError;
+
+      mockHttpService.get.mockReturnValue(throwError(() => axiosError));
+
+      await expect(service.findAllWatch(query)).rejects.toThrow(BadRequestException);
+    });
+
+    it('should handle generic error', async () => {
+      const query: FindAllWatchMoviesDto = {};
+      const genericError = new Error('Generic error');
+
+      mockHttpService.get.mockReturnValue(throwError(() => genericError));
+
+      await expect(service.findAllWatch(query)).rejects.toThrow(BadRequestException);
     });
   });
 });

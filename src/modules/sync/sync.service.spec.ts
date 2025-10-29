@@ -107,15 +107,11 @@ describe('SyncService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  // ------------------------------
-  // handleSyncMoviesCron tests
-  // ------------------------------
   describe('handleSyncMoviesCron', () => {
     it('should sync all pages successfully', async () => {
       movieApiService.findAll.mockResolvedValueOnce(mockMoviesPage1).mockResolvedValueOnce(mockMoviesPage2);
       movieRepository.upsertMany.mockResolvedValue(undefined);
 
-      // Mock delay to avoid real waiting
       jest.spyOn(service, 'delay').mockResolvedValue(undefined);
 
       await service.handleSyncMoviesCron();
