@@ -124,7 +124,7 @@ NODE_ENV="local"
 SERVER_PORT="8080"
 API_KEY="a1aa3908fab694fb3db28835664193d9"
 
-#Database
+# Database
 MONGO_HOST="localhost"
 MONGO_PORT="27017"
 MONGO_USERNAME=""
@@ -177,13 +177,22 @@ yarn install
 
 3. **Set up environment variables**
 ```bash
-cp test-env .env
+cp .env.example .env
 # Edit .env with your configuration
 ```
 
 4. **Set up the database**
 ```bash
-# 
+Step 1: Connect to Mongo
+mongo
+#(or if you're using the new shell)
+mongosh
+# Step 2: Create / Switch to the database
+use movie_service
+# MongoDB will create the database automatically once you insert data or create a collection.
+# Example: Create a collection inside it
+db.test.insertOne({ title: "Inception", year: 2010 })
+# Now the database officially exists 🎉
 ```
 
 5. **Start the application**
@@ -257,7 +266,10 @@ EXPOSE 8080
 CMD ["yarn", "start:prod"]
 ```
 
+### Docker Compose Deployment
 ```dockerComposeFile
+# Example DockerComposeFile
+
 version: "3.9"
 
 services:
@@ -285,6 +297,7 @@ services:
 
 volumes:
   redis-data:
+  
 ```
 
 ## 📚 API Documentation
