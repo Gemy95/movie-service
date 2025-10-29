@@ -14,8 +14,8 @@ COPY . .
 # Build the app
 RUN yarn build
 
-# Expose the app port (NestJS default is 3000)
-EXPOSE 5000
+# Expose the app port (NestJS default is 8080)
+EXPOSE 8080
 
 # Run the app
 CMD ["yarn", "start:prod"]
