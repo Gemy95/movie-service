@@ -110,6 +110,7 @@ POST   /api/v1/movie/addToFavorite     # Add Movie To Favorite
 POST   /api/v1/movie/addToWatch        # Add Movie To Watch
 GET    /api/v1/movie/favorite          # Find All Favorite Movies
 GET    /api/v1/movie/watch             # Find All Watch Movies
+POST   /api/v1/movie/makeRate          # Make Rate Movie
 POST   /api/v1/movie                   # Create Movie
 ```
 
