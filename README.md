@@ -58,6 +58,138 @@ Integration with third party TMDB Apis for listing, storing data into MongoDB da
 - **Guard Pattern** - Authentication
 - **Decorator Pattern** - Metadata and validation
 
+### Project File Structure
+ ```bash
++---src
+|   |   app.controller.spec.ts
+|   |   app.controller.ts
+|   |   app.module.ts
+|   |   app.service.ts
+|   |   main.ts
+|   |
+|   +---config
+|   |       configuration.ts
+|   |       env.validation.ts
+|   |
+|   +---modules
+|   |   +---auth
+|   |   |       api.key.strategy.ts
+|   |   |       auth.middleware.ts
+|   |   |       auth.module.ts
+|   |   |       auth.service.spec.ts
+|   |   |       auth.service.ts
+|   |   |
+|   |   +---movie
+|   |   |   |   movie.module.ts
+|   |   |   |
+|   |   |   +---api
+|   |   |   |       movie.api.controller.spec.ts
+|   |   |   |       movie.api.controller.ts
+|   |   |   |       movie.api.service.spec.ts
+|   |   |   |       movie.api.service.ts
+|   |   |   |
+|   |   |   +---constants
+|   |   |   |       movie.enum.constants.ts
+|   |   |   |
+|   |   |   +---dto
+|   |   |   |       add-to-favorite-movie.dto.ts
+|   |   |   |       add-to-watch-movie.dto.ts
+|   |   |   |       create-movie.dto.ts
+|   |   |   |       find-all-favorite-movie.dto.ts
+|   |   |   |       find-all-movie.dto.ts
+|   |   |   |       find-all-watch-movie.dto.ts
+|   |   |   |       rate-movie.dto.ts
+|   |   |   |
+|   |   |   +---interfaces
+|   |   |   |       movie.interface.ts
+|   |   |   |
+|   |   |   \---repositories
+|   |   |           movie.repository.ts
+|   |   |
+|   |   \---sync
+|   |           sync.module.ts
+|   |           sync.service.spec.ts
+|   |           sync.service.ts
+|   |
+|   \---shared
+|       +---commons
+|       |   \---dto
+|       |           get-all.dto.ts
+|       |           sort.dto.ts
+|       |
+|       +---constants
+|       |       sort.enum.constant.ts
+|       |       swagger.tags.constant.ts
+|       |
+|       +---database
+|       |       base.repository.ts
+|       |
+|       +---filters
+|       |       all-exception.filter.ts
+|       |
+|       +---helpers
+|       |       generate-pagination.helper.ts
+|       |       transform-sort.helper.ts
+|       |
+|       +---interfaces
+|       |   |   find-all.interface.ts
+|       |   |   find-one.interface.ts
+|       |       base.repository.ts
+|       |
+|       +---filters
+|       |       all-exception.filter.ts
+|       |
+|       +---helpers
+|       |       generate-pagination.helper.ts
+|       |       transform-sort.helper.ts
+|       |
+|       +---interfaces
+|       |   |   find-all.interface.ts
+|       |   |   find-one.interface.ts
+|       |       all-exception.filter.ts
+|       |
+|       +---helpers
+|       |       generate-pagination.helper.ts
+|       |       transform-sort.helper.ts
+|       |
+|       +---interfaces
+|       |   |   find-all.interface.ts
+|       |   |   find-one.interface.ts
+|       |       generate-pagination.helper.ts
+|       |       transform-sort.helper.ts
+|       |
+|       +---interfaces
+|       |   |   find-all.interface.ts
+|       |   |   find-one.interface.ts
+|       |   |   find-all.interface.ts
+|       |   |   find-one.interface.ts
+|       |   |   pagination.interface.ts
+|       |   |   sort.interface.ts
+|       |   |
+|       |   \---helpers
+|       |       generate-pagination.helper.ts
+|       |   |   pagination.interface.ts
+|       |   |   sort.interface.ts
+|       |   |
+|       |   \---helpers
+|       |           generate-pagination.helper.ts
+|       |   |
+|       |   \---helpers
+|       |           generate-pagination.helper.ts
+|       |           generate-pagination.helper.ts
+|       |           transform-sort.helper.ts
+|       |
+|       +---schemas
+|       |       movie.schema.ts
+|       |
+|       \---validator
+|               is-valid-sort.decorator.ts
+|
+\---test
+        app.e2e-spec.ts
+        jest-e2e.json
+```        
+
 ## 🐳 Docker Development Setup
 
 You can quickly run the entire application stack using Docker Compose. This includes MongoDB, Redis, and the NestJS application with hot-reload for development.
@@ -328,7 +460,6 @@ Monitor application health:
 - **Conventional Commits** for commit messages
 - **Jest** for testing with high coverage
 - **Mongoose** for database operations
-
 
 ## Support
 
