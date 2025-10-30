@@ -18,6 +18,8 @@ describe('MovieApiController', () => {
     addToWatch: jest.fn(),
     addToFavorite: jest.fn(),
     makeRate: jest.fn(),
+    findAllFavorite: jest.fn(),
+    findAllWatch: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -141,6 +143,68 @@ describe('MovieApiController', () => {
       await controller.makeRate(dto);
 
       expect(service.makeRate).toHaveBeenCalledWith(dto);
+    });
+  });
+
+  describe('findAllFavorite', () => {
+    it('should return formatted favorite movies list with pagination', async () => {
+      const query = {};
+      const mockMovies = {
+        results: [{ id: 10, title: 'The Matrix' }],
+        page: 2,
+        total_pages: 3,
+        total_results: 30,
+      };
+
+      mockMovieService.findAllFavorite = jest.fn().mockResolvedValue(mockMovies);
+
+      const result = await controller.findAllFavorite(query);
+
+      expect(mockMovieService.findAllFavorite).toHaveBeenCalledWith(query);
+      expect(result).toEqual({
+        data: [
+          {
+            id: 10,
+            attributes: { id: 10, title: 'The Matrix' },
+          },
+        ],
+        pagination: {
+          page: 2,
+          pages: 3,
+          count: 30,
+        },
+      });
+    });
+  });
+
+  describe('findAllWatch', () => {
+    it('should return formatted watch movies list with pagination', async () => {
+      const query = {};
+      const mockMovies = {
+        results: [{ id: 20, title: 'Interstellar' }],
+        page: 3,
+        total_pages: 6,
+        total_results: 60,
+      };
+
+      mockMovieService.findAllWatch = jest.fn().mockResolvedValue(mockMovies);
+
+      const result = await controller.findAllWatch(query);
+
+      expect(mockMovieService.findAllWatch).toHaveBeenCalledWith(query);
+      expect(result).toEqual({
+        data: [
+          {
+            id: 20,
+            attributes: { id: 20, title: 'Interstellar' },
+          },
+        ],
+        pagination: {
+          page: 3,
+          pages: 6,
+          count: 60,
+        },
+      });
     });
   });
 });
