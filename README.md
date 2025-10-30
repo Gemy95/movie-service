@@ -60,6 +60,28 @@ Integration with third party TMDB Apis for listing, storing data into MongoDB da
 
 ### Project File Structure
  ```bash
+C:.
+|   .env
+|   .env.example
+|   .eslintrc.js
+|   .gitignore
+|   .prettierrc
+|   docker-compose.yml
+|   Dockerfile
+|   eslint.config.mjs
+|   jest.config.ts
+|   nest-cli.json
+|   package-lock.json
+|   package.json
+|   README.md
+|   tsconfig.build.json
+|   tsconfig.json
+|   yarn.lock
+|
++---.husky
+|       common.sh
+|       pre-commit
+|
 +---src
 |   |   app.controller.spec.ts
 |   |   app.controller.ts
@@ -132,52 +154,10 @@ Integration with third party TMDB Apis for listing, storing data into MongoDB da
 |       |       transform-sort.helper.ts
 |       |
 |       +---interfaces
-|       |   |   find-all.interface.ts
-|       |   |   find-one.interface.ts
-|       |       base.repository.ts
-|       |
-|       +---filters
-|       |       all-exception.filter.ts
-|       |
-|       +---helpers
-|       |       generate-pagination.helper.ts
-|       |       transform-sort.helper.ts
-|       |
-|       +---interfaces
-|       |   |   find-all.interface.ts
-|       |   |   find-one.interface.ts
-|       |       all-exception.filter.ts
-|       |
-|       +---helpers
-|       |       generate-pagination.helper.ts
-|       |       transform-sort.helper.ts
-|       |
-|       +---interfaces
-|       |   |   find-all.interface.ts
-|       |   |   find-one.interface.ts
-|       |       generate-pagination.helper.ts
-|       |       transform-sort.helper.ts
-|       |
-|       +---interfaces
-|       |   |   find-all.interface.ts
-|       |   |   find-one.interface.ts
-|       |   |   find-all.interface.ts
-|       |   |   find-one.interface.ts
-|       |   |   pagination.interface.ts
-|       |   |   sort.interface.ts
-|       |   |
-|       |   \---helpers
-|       |       generate-pagination.helper.ts
-|       |   |   pagination.interface.ts
-|       |   |   sort.interface.ts
-|       |   |
-|       |   \---helpers
-|       |           generate-pagination.helper.ts
-|       |   |
-|       |   \---helpers
-|       |           generate-pagination.helper.ts
-|       |           generate-pagination.helper.ts
-|       |           transform-sort.helper.ts
+|       |       find-all.interface.ts
+|       |       find-one.interface.ts
+|       |       pagination.interface.ts
+|       |       sort.interface.ts
 |       |
 |       +---schemas
 |       |       movie.schema.ts
@@ -188,6 +168,7 @@ Integration with third party TMDB Apis for listing, storing data into MongoDB da
 \---test
         app.e2e-spec.ts
         jest-e2e.json
+
 ```        
 
 ## 🐳 Docker Development Setup
