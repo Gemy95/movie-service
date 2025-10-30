@@ -23,7 +23,9 @@ export class MovieModule implements NestModule {
         { path: 'v1/movie/:id', method: RequestMethod.GET },
         { path: 'v1/movie/addToWatch', method: RequestMethod.POST },
         { path: 'v1/movie/addToFavorite', method: RequestMethod.POST },
-        { path: 'v1/movie/makeRate', method: RequestMethod.POST }
+        { path: 'v1/movie/makeRate', method: RequestMethod.POST },
+        { path: 'v1/movie/favorite', method: RequestMethod.GET },
+        { path: 'v1/movie/watch', method: RequestMethod.GET }
       );
   }
 }
