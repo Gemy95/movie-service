@@ -418,7 +418,7 @@ volumes:
 
 ### Swagger UI
 Access the interactive API documentation at:
-- **Development**: `http://localhost:8080/docs`
+- **Development**: `http://localhost:8080/docs` ## Use API KEY (API_KEY) from .env in each endpoint
 - **Production**: `https://your-domain.com/docs`
 
 ### Health Endpoints
