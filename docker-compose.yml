@@ -9,10 +9,20 @@ services:
       - "8080:8080"
     depends_on:
       - redis
+      - mongo
     environment:
       NODE_ENV: development
+      # Redis inside Docker
       REDIS_HOST: redis
       REDIS_PORT: 6381
+      # Mongo inside Docker
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DATABASE: movie_service
+      MONGO_USERNAME: root
+      MONGO_PASSWORD: rootpassword
+    # If your app waits for DB before start:
+    # command: sh -c "npm run migration:run && npm run start:dev"
 
   redis:
     image: redis:7-alpine
@@ -23,5 +33,19 @@ services:
     volumes:
       - redis-data:/data
 
+  mongo:
+    image: mongo:7
+    container_name: mongo-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: movie_service
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
 volumes:
   redis-data:
+  mongo-data:
